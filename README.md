@@ -14,3 +14,8 @@ Isifel uses third-party AI models that are licensed separately:
 The licenses above apply to the respective models, not to the
 Isifel source code. Please review the applicable model licenses
 before redistributing or using those models.
+
+
+
+
+*Disclaimer* Switch to a T4 GPU in co-lab for this to run successfully. 
