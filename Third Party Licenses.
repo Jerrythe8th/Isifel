@@ -1,27 +1,18 @@
-# Third-Party Licenses
+## License
 
-Isifel uses third-party software and AI models that are licensed
-separately from the Isifel source code.
+The Isifel source code is licensed under the MIT License.
 
-## Qwen2.5-1.5B-Instruct
+## Third-Party Models
 
-License: Apache License 2.0
+Isifel uses third-party AI models that are licensed separately:
 
-Model:
-Qwen/Qwen2.5-1.5B-Instruct
+* Qwen2.5-1.5B-Instruct — Apache License 2.0
+* Stable Diffusion v1.5 — CreativeML OpenRAIL-M
+* Chatgpt's code - attribution is nice, but not a substitute for or requirement of a separate software license The licenses above apply to the respective models, not to the Isifel source code. Please review the applicable model licenses before redistributing or using those models.
+* Stable Video Diffusion 1.1 Image-to-Video (SVD-XT 1.1) — Stable Video Diffusion 1.1 Community License
 
-The Qwen model is subject to its own license terms.
 
-## Stable Diffusion v1.5
-
-License: CreativeML OpenRAIL-M
-
-Model:
-runwayml/stable-diffusion-v1-5
-
-The Stable Diffusion model is subject to its own license terms.
-Please review the applicable license before redistributing or
-commercially using the model or model weights.
+The licenses above apply to the respective models, not to the Isifel source code. Please review the applicable model licenses before redistributing or using those models.
 
 ## Python Dependencies
 
