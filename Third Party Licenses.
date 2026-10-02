@@ -1,0 +1,44 @@
+# Third-Party Licenses
+
+Isifel uses third-party software and AI models that are licensed
+separately from the Isifel source code.
+
+## Qwen2.5-1.5B-Instruct
+
+License: Apache License 2.0
+
+Model:
+Qwen/Qwen2.5-1.5B-Instruct
+
+The Qwen model is subject to its own license terms.
+
+## Stable Diffusion v1.5
+
+License: CreativeML OpenRAIL-M
+
+Model:
+runwayml/stable-diffusion-v1-5
+
+The Stable Diffusion model is subject to its own license terms.
+Please review the applicable license before redistributing or
+commercially using the model or model weights.
+
+## Python Dependencies
+
+Isifel also uses third-party Python packages including:
+
+- diffusers
+- transformers
+- accelerate
+- safetensors
+- bitsandbytes
+- ipywidgets
+- imageio
+- imageio-ffmpeg
+- openai
+- numpy
+- matplotlib
+- torch
+- Pillow
+
+These packages remain subject to their respective licenses.
