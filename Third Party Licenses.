@@ -8,11 +8,13 @@ Isifel uses third-party AI models that are licensed separately:
 
 * Qwen2.5-1.5B-Instruct — Apache License 2.0
 * Stable Diffusion v1.5 — CreativeML OpenRAIL-M
-* Chatgpt's code - attribution is nice, but not a substitute for or requirement of a separate software license The licenses above apply to the respective models, not to the Isifel source code. Please review the applicable model licenses before redistributing or using those models.
-* Stable Video Diffusion 1.1 Image-to-Video (SVD-XT 1.1) — Stable Video Diffusion 1.1 Community License
-
+* Stable Video Diffusion 1.1 Image-to-Video (SVD-XT 1.1) — `stable-video-diffusion-1-1-community`
 
 The licenses above apply to the respective models, not to the Isifel source code. Please review the applicable model licenses before redistributing or using those models.
+
+## Development Assistance
+
+ChatGPT was used as development assistance during the creation of Isifel. This attribution does not grant or replace any software license for the Isifel source code.
 
 ## Python Dependencies
 
