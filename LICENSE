@@ -19,3 +19,16 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+## License
+
+The Isifel source code is licensed under the MIT License.
+
+## Third-Party Models
+
+Isifel uses third-party AI models with their own licenses:
+
+- Qwen2.5-1.5B-Instruct — Apache License 2.0
+- Stable Diffusion v1.5 — CreativeML OpenRAIL-M
+
+Please review the respective model licenses before redistributing
+or using those models.
