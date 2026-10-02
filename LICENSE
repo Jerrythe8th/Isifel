@@ -25,10 +25,11 @@ The Isifel source code is licensed under the MIT License.
 
 ## Third-Party Models
 
-Isifel uses third-party AI models with their own licenses:
+Isifel uses third-party AI models that are licensed separately:
 
 - Qwen2.5-1.5B-Instruct — Apache License 2.0
 - Stable Diffusion v1.5 — CreativeML OpenRAIL-M
 
-Please review the respective model licenses before redistributing
-or using those models.
+The licenses above apply to the respective models, not to the
+Isifel source code. Please review the applicable model licenses
+before redistributing or using those models.
