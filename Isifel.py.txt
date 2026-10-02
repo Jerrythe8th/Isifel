@@ -22,7 +22,7 @@ import imageio.v2 as imageio
 import ipywidgets as widgets
 
 from PIL import Image, ImageDraw
-from IPython.display import display, clear_output, HTML
+from IPython.display import display, clear_output, HTML, Video
 from diffusers import StableDiffusionPipeline
 from datetime import datetime
 from transformers import (
@@ -1040,10 +1040,6 @@ def generate_isifel_response(message):
 
     studio_context = current_prompt
 
-    # --------------------------------------------------------
-    # ISIFEL PERSONALITY / SYSTEM PROMPT
-    # --------------------------------------------------------
-
     system_message = """
 You are Isifel, the built-in AI assistant.
 
@@ -1080,10 +1076,6 @@ Do not call yourself "AI Creative Studio".
 Do not call yourself "AI Creative Studio assistant".
 """
 
-    # --------------------------------------------------------
-    # CURRENT RANDOM CONCEPT
-    # --------------------------------------------------------
-
     if studio_context:
 
         system_message += f"""
@@ -1092,10 +1084,6 @@ Current Isifel generated creative concept:
 
 "{studio_context}"
 """
-
-    # --------------------------------------------------------
-    # MESSAGE HISTORY
-    # --------------------------------------------------------
 
     messages = [
         {
@@ -1122,10 +1110,6 @@ Current Isifel generated creative concept:
 
     try:
 
-        # ----------------------------------------------------
-        # FORMAT FOR QWEN
-        # ----------------------------------------------------
-
         formatted_prompt = (
             isifel_tokenizer.apply_chat_template(
                 messages,
@@ -1134,22 +1118,12 @@ Current Isifel generated creative concept:
             )
         )
 
-        # ----------------------------------------------------
-        # TOKENIZE
-        # ----------------------------------------------------
-
         inputs = isifel_tokenizer(
             formatted_prompt,
             return_tensors="pt",
             truncation=True,
             max_length=2048
         )
-
-        # ----------------------------------------------------
-        # GET REAL MODEL INPUT DEVICE
-        #
-        # This NEVER references a widgets.Text object.
-        # ----------------------------------------------------
 
         model_input_device = (
             isifel_model
@@ -1165,10 +1139,6 @@ Current Isifel generated creative concept:
             for key, value in inputs.items()
         }
 
-        # ----------------------------------------------------
-        # GENERATE
-        # ----------------------------------------------------
-
         with torch.no_grad():
 
             outputs = isifel_model.generate(
@@ -1183,10 +1153,6 @@ Current Isifel generated creative concept:
                 )
             )
 
-        # ----------------------------------------------------
-        # REMOVE ORIGINAL INPUT TOKENS
-        # ----------------------------------------------------
-
         input_length = (
             inputs["input_ids"].shape[1]
         )
@@ -1195,10 +1161,6 @@ Current Isifel generated creative concept:
             0,
             input_length:
         ]
-
-        # ----------------------------------------------------
-        # DECODE
-        # ----------------------------------------------------
 
         response = (
             isifel_tokenizer.decode(
@@ -1332,7 +1294,7 @@ video_button = widgets.Button(
 )
 
 # ============================================================
-# IMAGE → VIDEO
+# IMAGE → VIDEO — FIXED
 # ============================================================
 
 def create_video(_=None):
@@ -1355,12 +1317,15 @@ def create_video(_=None):
 
     frames = []
 
+    # --------------------------------------------------------
+    # Prepare image
+    # --------------------------------------------------------
+
     base = current_image.convert(
         "RGB"
     )
 
     duration = video_duration.value
-
     fps = video_fps.value
 
     total_frames = (
@@ -1368,6 +1333,30 @@ def create_video(_=None):
     )
 
     width, height = base.size
+
+    # --------------------------------------------------------
+    # H.264 / YUV420P prefers even dimensions
+    # --------------------------------------------------------
+
+    width = width - (
+        width % 2
+    )
+
+    height = height - (
+        height % 2
+    )
+
+    base = base.resize(
+        (
+            width,
+            height
+        ),
+        Image.Resampling.LANCZOS
+    )
+
+    # --------------------------------------------------------
+    # Create frames
+    # --------------------------------------------------------
 
     for i in range(total_frames):
 
@@ -1395,6 +1384,15 @@ def create_video(_=None):
             height * zoom
         )
 
+        # Keep resized dimensions even
+        new_w = new_w - (
+            new_w % 2
+        )
+
+        new_h = new_h - (
+            new_h % 2
+        )
+
         frame = base.resize(
             (
                 new_w,
@@ -1420,26 +1418,105 @@ def create_video(_=None):
             )
         )
 
+        frame = frame.convert(
+            "RGB"
+        )
+
         frames.append(
-            np.array(frame)
+            np.asarray(
+                frame,
+                dtype=np.uint8
+            )
         )
 
     filename = (
         "/content/isifel_video_"
-        + datetime.now().strftime("%H%M%S")
+        + datetime.now().strftime(
+            "%H%M%S"
+        )
         + ".mp4"
     )
 
+    # ========================================================
+    # ENCODE MP4
+    # ========================================================
+
+    writer = None
+
     try:
 
-        imageio.mimsave(
+        print(
+            "Encoding H.264 video..."
+        )
+
+        writer = imageio.get_writer(
             filename,
-            frames,
+            format="FFMPEG",
+            mode="I",
             fps=fps,
-            codec="libx264"
+            codec="libx264",
+            pixelformat="yuv420p",
+            output_params=[
+                "-movflags",
+                "+faststart",
+                "-preset",
+                "medium",
+                "-crf",
+                "23"
+            ]
+        )
+
+        for frame in frames:
+
+            writer.append_data(
+                frame
+            )
+
+        writer.close()
+        writer = None
+
+        # ----------------------------------------------------
+        # Verify file
+        # ----------------------------------------------------
+
+        if not os.path.exists(
+            filename
+        ):
+
+            raise RuntimeError(
+                "The MP4 file was not created."
+            )
+
+        file_size = os.path.getsize(
+            filename
+        )
+
+        if file_size < 1000:
+
+            raise RuntimeError(
+                "The MP4 file is too small "
+                "and may be corrupted."
+            )
+
+        current_video = filename
+
+        print(
+            "✅ Video encoded successfully!"
+        )
+
+        print(
+            f"Size: "
+            f"{file_size / 1024 / 1024:.2f} MB"
         )
 
     except Exception as e:
+
+        if writer is not None:
+
+            try:
+                writer.close()
+            except:
+                pass
 
         set_status(
             "VIDEO ERROR",
@@ -1451,7 +1528,7 @@ def create_video(_=None):
             clear_output()
 
             print(
-                "❌ Video error:"
+                "❌ Video creation error:"
             )
 
             print(
@@ -1460,7 +1537,9 @@ def create_video(_=None):
 
         return
 
-    current_video = filename
+    # ========================================================
+    # EMBED VIDEO DIRECTLY IN COLAB
+    # ========================================================
 
     with video_output:
 
@@ -1470,19 +1549,40 @@ def create_video(_=None):
 
         display(
             HTML(
-                f"""
-                <video
-                    width="700"
-                    controls
-                    src="{filename}">
-                </video>
+                """
+                <h3 style="
+                    margin-bottom:8px;
+                ">
+                    🎬 Isifel Video
+                </h3>
                 """
             )
         )
 
-        print(
-            "Video created:",
-            filename
+        display(
+            Video(
+                filename,
+                embed=True,
+                width=700
+            )
+        )
+
+        display(
+            HTML(
+                f"""
+                <p style="
+                    color:#8b95a5;
+                ">
+                    ✅ Video created successfully.
+                </p>
+
+                <p style="
+                    color:#8b95a5;
+                ">
+                    File: {html.escape(filename)}
+                </p>
+                """
+            )
         )
 
     set_status(
@@ -1620,7 +1720,9 @@ def show_history():
 
             return
 
-        for item in reversed(history):
+        for item in reversed(
+            history
+        ):
 
             display(
                 HTML(
