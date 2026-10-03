@@ -1,6 +1,9 @@
 # Isifel
 Isifel is a multi-task open-source ai model. It is very useful for ai image generation, talking with ai, and more. Disclaimer, this ai model was coded almost entirely by ai. It serves more as a hub of different ai tools, THIS FOR RIGHT NOW ONLY INCLUDES CODE. THIS IS ENGINEERED TO BE USED IN GOOGLE COLAB, I might change it in the future.
 
+## Isifel Advanced
+Isifel advanced is a model of Isifel ONLY MENT TO BE USED IN GOOGLE COLAB WITH AN ADVANCED GPU (not T4, only basic Isifel can run on a T4 GPU on Colab.) Isifel advanced features a VERY ADVANCED picture to video/text to video model. (CogVideoX-5B (this is new, EXPECT BUGS)
+
 ## License
 
 The Isifel source code is licensed under the MIT License.
